@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.rabbitmq.dao.ProductDao">
+
+    <resultMap type="com.example.rabbitmq.entity.Product" id="ProductMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="productNo" column="product_no" jdbcType="VARCHAR"/>
+        <result property="total" column="total" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProductMap">
+        select
+          id, product_no, total, create_time, update_time
+        from db_springboot.product
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ProductMap">
+        select
+          id, product_no, total, create_time, update_time
+        from db_springboot.product
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ProductMap">
+        select
+          id, product_no, total, create_time, update_time
+        from db_springboot.product
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="productNo != null and productNo != ''">
+                and product_no = #{productNo}
+            </if>
+            <if test="total != null">
+                and total = #{total}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into db_springboot.product(product_no, total, create_time, update_time)
+        values (#{productNo}, #{total}, #{createTime}, #{updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_springboot.product
+        <set>
+            <if test="productNo != null and productNo != ''">
+                product_no = #{productNo},
+            </if>
+            <if test="total != null">
+                total = #{total},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_springboot.product where id = #{id}
+    </delete>
+
+    <!--根据产品号查询-->
+    <select id="selectByProductNo" resultType="com.example.rabbitmq.entity.Product">
+        SELECT *
+        FROM product WHERE product_no=#{productNo}
+        AND total>0
+    </select>
+
+    <!--更新库存量-->
+    <update id="updateTotal">
+    UPDATE product a
+    SET a.total = a.total - 1
+    WHERE a.product_no = #{productNo}
+    AND a.total > 0
+  </update>
+
+</mapper>

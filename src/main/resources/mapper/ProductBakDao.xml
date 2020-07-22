@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.rabbitmq.dao.ProductBakDao">
+
+    <resultMap type="com.example.rabbitmq.entity.ProductBak" id="ProductBakMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="stock" column="stock" jdbcType="INTEGER"/>
+        <result property="purchaseDate" column="purchase_date" jdbcType="OTHER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isActive" column="is_active" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProductBakMap">
+        select
+          id, name, stock, purchase_date, create_time, update_time, is_active
+        from db_springboot.product_bak
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ProductBakMap">
+        select
+          id, name, stock, purchase_date, create_time, update_time, is_active
+        from db_springboot.product_bak
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ProductBakMap">
+        select
+          id, name, stock, purchase_date, create_time, update_time, is_active
+        from db_springboot.product_bak
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="stock != null">
+                and stock = #{stock}
+            </if>
+            <if test="purchaseDate != null">
+                and purchase_date = #{purchaseDate}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="isActive != null">
+                and is_active = #{isActive}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into db_springboot.product_bak(name, stock, purchase_date, create_time, update_time, is_active)
+        values (#{name}, #{stock}, #{purchaseDate}, #{createTime}, #{updateTime}, #{isActive})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_springboot.product_bak
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="stock != null">
+                stock = #{stock},
+            </if>
+            <if test="purchaseDate != null">
+                purchase_date = #{purchaseDate},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="isActive != null">
+                is_active = #{isActive},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_springboot.product_bak where id = #{id}
+    </delete>
+
+</mapper>

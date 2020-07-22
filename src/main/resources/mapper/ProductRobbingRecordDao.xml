@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.rabbitmq.dao.ProductRobbingRecordDao">
+
+    <resultMap type="com.example.rabbitmq.entity.ProductRobbingRecord" id="ProductRobbingRecordMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="productId" column="product_id" jdbcType="INTEGER"/>
+        <result property="robbingTime" column="robbing_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProductRobbingRecordMap">
+        select
+          id, mobile, product_id, robbing_time, update_time
+        from db_springboot.product_robbing_record
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ProductRobbingRecordMap">
+        select
+          id, mobile, product_id, robbing_time, update_time
+        from db_springboot.product_robbing_record
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ProductRobbingRecordMap">
+        select
+          id, mobile, product_id, robbing_time, update_time
+        from db_springboot.product_robbing_record
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and mobile = #{mobile}
+            </if>
+            <if test="productId != null">
+                and product_id = #{productId}
+            </if>
+            <if test="robbingTime != null">
+                and robbing_time = #{robbingTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into db_springboot.product_robbing_record(mobile, product_id, robbing_time, update_time)
+        values (#{mobile}, #{productId}, #{robbingTime}, #{updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_springboot.product_robbing_record
+        <set>
+            <if test="mobile != null and mobile != ''">
+                mobile = #{mobile},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId},
+            </if>
+            <if test="robbingTime != null">
+                robbing_time = #{robbingTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_springboot.product_robbing_record where id = #{id}
+    </delete>
+
+</mapper>
