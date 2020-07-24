@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.Date;
+
 /**
  * Created by Administrator on 2018/8/25.
  */
@@ -19,10 +22,10 @@ public class ConcurrencyService {
 
     private static final String ProductNo="product_10010";
 
-    @Autowired
+    @Resource
     private ProductDao productDao;
 
-    @Autowired
+    @Resource
     private ProductRobbingRecordDao productRobbingRecordDao;
 
     /**
@@ -53,6 +56,8 @@ public class ConcurrencyService {
                     ProductRobbingRecord entity=new ProductRobbingRecord();
                     entity.setMobile(mobile);
                     entity.setProductId(product.getId());
+                    entity.setRobbingTime(new Date());
+                    entity.setUpdateTime(new Date());
                     productRobbingRecordDao.insert(entity);
                 }
             }

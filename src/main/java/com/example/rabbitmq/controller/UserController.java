@@ -6,6 +6,7 @@ import com.example.rabbitmq.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 用户信息表(User)表控制层
@@ -37,5 +38,11 @@ public class UserController {
     public CommonResult login(User user) {
         return userService.login(user);
     }
+
+    @RequestMapping(value = "getUserDetail")
+    public List<User> getUserDetail() {
+        return userService.queryAllByLimit(1,20);
+    }
+
 
 }

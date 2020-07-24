@@ -82,7 +82,7 @@
     </delete>
 
     <!--根据产品号查询-->
-    <select id="selectByProductNo" resultType="com.example.rabbitmq.entity.Product">
+    <select id="selectByProductNo" resultMap="ProductMap">
         SELECT *
         FROM product WHERE product_no=#{productNo}
         AND total>0

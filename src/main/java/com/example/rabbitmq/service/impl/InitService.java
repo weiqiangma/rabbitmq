@@ -1,10 +1,13 @@
 package com.example.rabbitmq.service.impl;
 
+import com.example.rabbitmq.entity.ProductBak;
+import com.example.rabbitmq.service.ProductBakService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -14,7 +17,7 @@ import java.util.concurrent.CountDownLatch;
 public class InitService {
     private static final Logger log= LoggerFactory.getLogger(InitService.class);
 
-    public static final int ThreadNum = 50000;
+    public static final int ThreadNum = 20000;
 
     private static int mobile=0;
 
@@ -23,6 +26,9 @@ public class InitService {
 
     @Autowired
     private CommonMqService commonMqService;
+
+    @Autowired
+    private ProductBakService productBakService;
 
     public void generateMultiThread(){
         log.info("开始初始化线程数----> ");
@@ -54,10 +60,12 @@ public class InitService {
                 mobile += 1;
 
                 //TODO：发送消息入抢单队列：env.getProperty("user.order.queue.name")
-                commonMqService.sendRobbingMsgV2(String.valueOf(mobile));
-
-                //concurrencyService.manageRobbing(String.valueOf(mobile));//--v1.0
+                //commonMqService.sendRobbingMsgV2(String.valueOf(mobile));
+                //商品减库存
+                concurrencyService.manageRobbing(String.valueOf(mobile));//--v1.0
                 //commonMqService.sendRobbingMsg(String.valueOf(mobile));//+v2.0
+                //productBakService.queryAllByLimit(1,20);
+                //System.out.println("用户：{}" + mobile + "-------------" + startLatch.getCount());
             }catch (Exception e){
                 e.printStackTrace();
             }
