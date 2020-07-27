@@ -46,11 +46,16 @@ public class RabbitmqConfig {
     public SimpleRabbitListenerContainerFactory listenerContainer(){
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
+        //设置消息序列化机制
         factory.setMessageConverter(new Jackson2JsonMessageConverter());
+        //设置并发消费者的数量(默认为1)
         factory.setConcurrentConsumers(1);
+        //设置最大并发消费者数量
         factory.setMaxConcurrentConsumers(1);
+        //设置消费者一次从队列获取消息的数量(缓存在client)
         factory.setPrefetchCount(1);
         factory.setTxSize(1);
+        //手动确认
         factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return factory;
     }
@@ -63,7 +68,7 @@ public class RabbitmqConfig {
     public SimpleRabbitListenerContainerFactory multiListenerContainer(){
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factoryConfigurer.configure(factory,connectionFactory);
-        factory.setMessageConverter(new Jackson2JsonMessageConverter());
+        //factory.setMessageConverter(new Jackson2JsonMessageConverter());
         factory.setAcknowledgeMode(AcknowledgeMode.NONE);
         factory.setConcurrentConsumers(env.getProperty("spring.rabbitmq.listener.concurrency",int.class));
         factory.setMaxConcurrentConsumers(env.getProperty("spring.rabbitmq.listener.max-concurrency",int.class));
@@ -374,63 +379,54 @@ public class RabbitmqConfig {
 
         return container;
     }
+
+    @Bean
+    public Queue testDirectQueue(){return new Queue("testDirectQueue", true); }
+
+    /**
+     * 直连型交换机（direct exchange）是根据消息携带的路由键（routing key）将消息投递给对应队列的
+     * @return
+     */
+    @Bean
+    public DirectExchange testDirectExchange(){return new DirectExchange("testDirectExchange"); }
+
+    @Bean
+    public Binding testDirectBinding(){ return BindingBuilder.bind(testDirectQueue()).to(testDirectExchange()).with("test.direct.routing.key"); }
+
+    @Bean
+    public Queue testFanOutQueue(){return new Queue("testFanOutQueue", true); }
+
+    @Bean
+    public Queue testFanOutQueue2(){return new Queue("testFanOutQueue2", true); }
+
+    /**
+     * 扇形交换机(fanout exchange) 就是我们熟悉的广播模式或者订阅模式，给Fanout交换机发送消息，绑定了这个交换机的所有队列都收到这个消息。
+     * @return
+     */
+    @Bean
+    public FanoutExchange testFanOutExchange(){return new FanoutExchange("testFanOutExchange"); }
+
+    @Bean
+    public Binding testFanOutBinding(){return BindingBuilder.bind(testFanOutQueue()).to(testFanOutExchange()); }
+
+    @Bean
+    public Binding testFanOutBinding2(){return BindingBuilder.bind(testFanOutQueue2()).to(testFanOutExchange()); }
+
+
+    public SimpleRabbitListenerContainerFactory ConsumeAckListenerContainer(){
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        //设置消息序列化机制
+        factory.setMessageConverter(new Jackson2JsonMessageConverter());
+        //设置并发消费者的数量(默认为1)
+        factory.setConcurrentConsumers(1);
+        //设置最大并发消费者数量
+        factory.setMaxConcurrentConsumers(1);
+        //设置消费者一次从队列获取消息的数量(缓存在client)
+        factory.setPrefetchCount(1);
+        factory.setTxSize(1);
+        //手动确认
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        return factory;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

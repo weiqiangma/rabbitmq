@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by Administrator on 2018/8/30.
  */
@@ -31,7 +33,7 @@ public class CommonMqListener {
      * 监听消费用户日志
      * @param message
      */
-    //@RabbitListener(queues = "${log.user.queue.name}", containerFactory = "singleListenerContainer")
+    @RabbitListener(queues = "${log.user.queue.name}", containerFactory = "singleListenerContainer")
     public void consumeUserLogQueue(Message message){
         System.out.println("进入监听消息方法");
         try {
@@ -88,6 +90,42 @@ public class CommonMqListener {
     public void consumeManyQueue2(Message message) {
         try {
             log.info("消费者2监听：{}", new String(message.getBody(), "UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RabbitListener(queues = "testDirectQueue", containerFactory = "multiListenerContainer")
+    public void consumeTestDirectQueue(Message message) {
+        try {
+            log.info("Direct消费者监听1：{}", new String(message.getBody(), "UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RabbitListener(queues = "testDirectQueue", containerFactory = "multiListenerContainer")
+    public void consumeTestDirectQueue2(Message message) {
+        try {
+            log.info("Direct消费者监听2：{}", new String(message.getBody(), "UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RabbitListener(queues = "testFanOutQueue")
+    public void consumeTestFanOutQueue(Message message) {
+        try {
+            log.info("FanOut消费者监听1：{}", new String(message.getBody(), "UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RabbitListener(queues = "testFanOutQueue2")
+    public void consumeTestFanOutQueue2(Message message) {
+        try {
+            log.info("FanOut消费者监听2：{}", new String(message.getBody(), "UTF-8"));
         } catch (Exception e) {
             e.printStackTrace();
         }

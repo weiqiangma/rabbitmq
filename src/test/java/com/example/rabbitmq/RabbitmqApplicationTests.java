@@ -1,8 +1,11 @@
 package com.example.rabbitmq;
 
+import com.example.rabbitmq.entity.ProductBak;
 import com.example.rabbitmq.entity.User;
+import com.example.rabbitmq.service.ProductBakService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
@@ -14,6 +17,9 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
+import java.util.Random;
+
 
 @SpringBootTest
 class RabbitmqApplicationTests {
@@ -22,6 +28,8 @@ class RabbitmqApplicationTests {
     RabbitTemplate rabbitTemplate;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    ProductBakService productBakService;
 
     @Test
     void contextLoads() throws JsonProcessingException {
@@ -36,4 +44,28 @@ class RabbitmqApplicationTests {
         System.out.println("正在发送消息");
     }
 
+    @Test
+    public void testAddProductBak(){
+        for(int i = 0; i < 100000; i++) {
+            Random random = new Random();
+            String name = RandomStringUtils.random(random.nextInt(8), 0x4e00, 0x9fa5, false, false);
+            ProductBak productBak = new ProductBak();
+            productBak.setName(name);
+            productBak.setIsActive(1);
+            productBak.setStock(random.nextInt(1000));
+            productBak.setPurchaseDate(new Date());
+            productBak.setUpdateTime(new Date());
+            productBak.setCreateTime(new Date());
+            productBakService.insert(productBak);
+        }
+        System.out.println("ok");
+    }
+
+    @Test
+    public void testDirectQueue() {
+            String body = "hello world:";
+            Message message = MessageBuilder.withBody(body.getBytes()).build();
+            rabbitTemplate.convertAndSend("testFanOutExchange", "", message);
+            //rabbitTemplate.send("testFanOutExchange","test.fanout.routing.key1", message);
+    }
 }
