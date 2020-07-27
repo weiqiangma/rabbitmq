@@ -60,7 +60,7 @@ public class InitService {
                 mobile += 1;
 
                 //TODO：发送消息入抢单队列：env.getProperty("user.order.queue.name")
-                //commonMqService.sendRobbingMsgV2(String.valueOf(mobile));
+                commonMqService.sendRobbingMsgV2(String.valueOf(mobile));
                 //商品减库存
                 concurrencyService.manageRobbing(String.valueOf(mobile));//--v1.0
                 //commonMqService.sendRobbingMsg(String.valueOf(mobile));//+v2.0

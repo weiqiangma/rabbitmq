@@ -115,6 +115,9 @@ public class RabbitmqConfig {
 
     @Bean
     public Binding basicBinding(){
+
+
+
         return BindingBuilder.bind(basicQueue()).to(basicExchange()).with(env.getProperty("basic.info.mq.routing.key.name"));
     }
 
@@ -371,8 +374,6 @@ public class RabbitmqConfig {
 
         return container;
     }
-
-
 }
 
 

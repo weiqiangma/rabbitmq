@@ -29,9 +29,8 @@ class RabbitmqApplicationTests {
         user.setUserName("张三");
         user.setPassword("123456");
 
-        Message message = MessageBuilder.withBody(objectMapper.writeValueAsBytes(user)).build();
-        message.getMessageProperties().setContentType(MessageProperties.CONTENT_TYPE_JSON);
-
+        Message message = MessageBuilder.withBody("hello world".getBytes()).build();
+       // message.getMessageProperties().setContentType(MessageProperties.CONTENT_TYPE_JSON);
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         rabbitTemplate.convertAndSend("local.log.user.exchange", "local.log.user.routing.key", message);
         System.out.println("正在发送消息");

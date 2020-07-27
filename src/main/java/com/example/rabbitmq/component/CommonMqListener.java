@@ -31,7 +31,7 @@ public class CommonMqListener {
      * 监听消费用户日志
      * @param message
      */
-    @RabbitListener(queues = "${log.user.queue.name}", containerFactory = "singleListenerContainer")
+    //@RabbitListener(queues = "${log.user.queue.name}", containerFactory = "singleListenerContainer")
     public void consumeUserLogQueue(Message message){
         System.out.println("进入监听消息方法");
         try {
@@ -53,7 +53,6 @@ public class CommonMqListener {
     public void consumeMailQueue(Message message){
         try {
             log.info("监听消费邮件发送 监听到消息： {} ",new String(message.getBody(),"UTF-8"));
-
             //mailService.sendEmail();
         }catch (Exception e){
             e.printStackTrace();
@@ -66,12 +65,30 @@ public class CommonMqListener {
      * @param message
      */
     @RabbitListener(queues = "${simple.dead.real.queue.name}",containerFactory = "singleListenerContainer")
-    public void consumeDeadQueue(@Payload byte[] message){
+    public void consumeDeadQueue(Message message){
         try {
-            log.info("监听消费死信队列中的消息： {} ",new String(message,"UTF-8"));
+            log.info("监听消费死信队列中的消息： {} ",new String(message.getBody(),"UTF-8"));
 
             //mailService.sendEmail();
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @RabbitListener(queues = "${log.user.queue.name}", containerFactory = "singleListenerContainer")
+    public void consumeManyQueue1(Message message) {
+        try {
+            log.info("消费者1监听：{}", new String(message.getBody(), "UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RabbitListener(queues = "${log.user.queue.name}", containerFactory = "singleListenerContainer")
+    public void consumeManyQueue2(Message message) {
+        try {
+            log.info("消费者2监听：{}", new String(message.getBody(), "UTF-8"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -4,6 +4,7 @@ import com.example.rabbitmq.dao.ProductDao;
 import com.example.rabbitmq.dao.ProductRobbingRecordDao;
 import com.example.rabbitmq.entity.Product;
 import com.example.rabbitmq.entity.ProductRobbingRecord;
+import com.example.rabbitmq.entity.UserLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class ConcurrencyService {
 
     @Resource
     private ProductRobbingRecordDao productRobbingRecordDao;
+
+    @Resource
+    private CommonMqService commonMqService;
 
     /**
      * 处理抢单
@@ -59,6 +63,8 @@ public class ConcurrencyService {
                     entity.setRobbingTime(new Date());
                     entity.setUpdateTime(new Date());
                     productRobbingRecordDao.insert(entity);
+                    UserLog userLog = new UserLog("mobile", "商品秒杀", "抢商品","用户" + mobile + "抢单成功", new Date());
+                    commonMqService.sendUserLog(userLog);
                 }
             }
         }catch (Exception e){
