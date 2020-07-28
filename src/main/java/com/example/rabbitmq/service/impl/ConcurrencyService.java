@@ -65,6 +65,8 @@ public class ConcurrencyService {
                     productRobbingRecordDao.insert(entity);
                     UserLog userLog = new UserLog("mobile", "商品秒杀", "抢商品","用户" + mobile + "抢单成功", new Date());
                     commonMqService.sendUserLog(userLog);
+                } else{
+                    log.info("抢单失败！！！");
                 }
             }
         }catch (Exception e){

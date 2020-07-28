@@ -394,7 +394,7 @@ public class RabbitmqConfig {
     public Binding testDirectBinding(){ return BindingBuilder.bind(testDirectQueue()).to(testDirectExchange()).with("test.direct.routing.key"); }
 
     @Bean
-    public Queue testFanOutQueue(){return new Queue("testFanOutQueue", true); }
+    public Queue testFanOutQueue(){ return new Queue("testFanOutQueue", true); }
 
     @Bean
     public Queue testFanOutQueue2(){return new Queue("testFanOutQueue2", true); }
@@ -404,7 +404,7 @@ public class RabbitmqConfig {
      * @return
      */
     @Bean
-    public FanoutExchange testFanOutExchange(){return new FanoutExchange("testFanOutExchange"); }
+    public FanoutExchange testFanOutExchange(){ return new FanoutExchange("testFanOutExchange"); }
 
     @Bean
     public Binding testFanOutBinding(){return BindingBuilder.bind(testFanOutQueue()).to(testFanOutExchange()); }
@@ -412,12 +412,12 @@ public class RabbitmqConfig {
     @Bean
     public Binding testFanOutBinding2(){return BindingBuilder.bind(testFanOutQueue2()).to(testFanOutExchange()); }
 
-
+    @Bean
     public SimpleRabbitListenerContainerFactory ConsumeAckListenerContainer(){
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         //设置消息序列化机制
-        factory.setMessageConverter(new Jackson2JsonMessageConverter());
+        //factory.setMessageConverter(new Jackson2JsonMessageConverter());
         //设置并发消费者的数量(默认为1)
         factory.setConcurrentConsumers(1);
         //设置最大并发消费者数量
@@ -425,7 +425,7 @@ public class RabbitmqConfig {
         //设置消费者一次从队列获取消息的数量(缓存在client)
         factory.setPrefetchCount(1);
         factory.setTxSize(1);
-        //手动确认
+        //手动确认消息已被消费
         factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         return factory;
     }

@@ -40,9 +40,11 @@ public class UserOrderListener implements ChannelAwareMessageListener {
             String mobile = new String(body, "UTF-8");
             log.info("监听到抢单手机号：{}",mobile);
             concurrencyService.manageRobbing(String.valueOf(mobile));
+            //手动确认消费消息，若不确认该消息还会在队列中直到被确认消费
             channel.basicAck(tag, true);
         }catch (Exception e) {
             log.error("用户商城抢单发生异常：",e.fillInStackTrace());
+            //拒绝消费，该消息被回退到消息队列中
             channel.basicReject(tag, false);
         }
     }

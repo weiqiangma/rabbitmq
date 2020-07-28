@@ -4,6 +4,7 @@ import com.example.rabbitmq.dao.UserLogDao;
 import com.example.rabbitmq.entity.User;
 import com.example.rabbitmq.entity.UserLog;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -95,16 +96,18 @@ public class CommonMqListener {
         }
     }
 
-    @RabbitListener(queues = "testDirectQueue", containerFactory = "multiListenerContainer")
-    public void consumeTestDirectQueue(Message message) {
+    @RabbitListener(queues = "testDirectQueue", containerFactory = "ConsumeAckListenerContainer")
+    public void consumeTestDirectQueue(Message message, Channel channel) {
         try {
+            //告诉服务器收到这条消息 已经被我消费了 可以在队列删掉 这样以后就不会再发了 否则消息服务器以为这条消息没处理掉 后续还会在发
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             log.info("Direct消费者监听1：{}", new String(message.getBody(), "UTF-8"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @RabbitListener(queues = "testDirectQueue", containerFactory = "multiListenerContainer")
+    //@RabbitListener(queues = "testDirectQueue", containerFactory = "multiListenerContainer")
     public void consumeTestDirectQueue2(Message message) {
         try {
             log.info("Direct消费者监听2：{}", new String(message.getBody(), "UTF-8"));

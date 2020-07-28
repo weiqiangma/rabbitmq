@@ -3,6 +3,8 @@ package com.example.rabbitmq;
 import com.example.rabbitmq.entity.ProductBak;
 import com.example.rabbitmq.entity.User;
 import com.example.rabbitmq.service.ProductBakService;
+import com.example.rabbitmq.service.impl.CommonMqService;
+import com.example.rabbitmq.service.impl.InitService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 
@@ -30,6 +33,10 @@ class RabbitmqApplicationTests {
     ObjectMapper objectMapper;
     @Autowired
     ProductBakService productBakService;
+    @Autowired
+    InitService initService;
+    @Autowired
+    CommonMqService commonMqService;
 
     @Test
     void contextLoads() throws JsonProcessingException {
@@ -63,9 +70,15 @@ class RabbitmqApplicationTests {
 
     @Test
     public void testDirectQueue() {
-            String body = "hello world:";
-            Message message = MessageBuilder.withBody(body.getBytes()).build();
-            rabbitTemplate.convertAndSend("testFanOutExchange", "", message);
+//            String body = "hello world:";
+//            Message message = MessageBuilder.withBody(body.getBytes()).build();
+//            rabbitTemplate.convertAndSend("testDirectExchange", "test.direct.routing.key", message);
             //rabbitTemplate.send("testFanOutExchange","test.fanout.routing.key1", message);
+            commonMqService.sendRobbingMsgV2("17857026617");
+    }
+
+    @Test
+    public void testFindProduct() {
+        initService.generateMultiThread();
     }
 }

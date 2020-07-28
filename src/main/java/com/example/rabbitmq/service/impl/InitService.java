@@ -17,7 +17,7 @@ import java.util.concurrent.CountDownLatch;
 public class InitService {
     private static final Logger log= LoggerFactory.getLogger(InitService.class);
 
-    public static final int ThreadNum = 20000;
+    public static final int ThreadNum = 60000;
 
     private static int mobile=0;
 
@@ -62,9 +62,9 @@ public class InitService {
                 //TODO：发送消息入抢单队列：env.getProperty("user.order.queue.name")
                 commonMqService.sendRobbingMsgV2(String.valueOf(mobile));
                 //商品减库存
-                concurrencyService.manageRobbing(String.valueOf(mobile));//--v1.0
+                //concurrencyService.manageRobbing(String.valueOf(mobile));//--v1.0
                 //commonMqService.sendRobbingMsg(String.valueOf(mobile));//+v2.0
-                //productBakService.queryAllByLimit(1,20);
+                productBakService.queryAllByLimit(1,20);
                 //System.out.println("用户：{}" + mobile + "-------------" + startLatch.getCount());
             }catch (Exception e){
                 e.printStackTrace();

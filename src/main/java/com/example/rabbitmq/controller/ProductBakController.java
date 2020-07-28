@@ -1,5 +1,6 @@
 package com.example.rabbitmq.controller;
 
+import com.example.rabbitmq.common.CommonResult;
 import com.example.rabbitmq.entity.ProductBak;
 import com.example.rabbitmq.service.ProductBakService;
 import org.springframework.web.bind.annotation.*;
