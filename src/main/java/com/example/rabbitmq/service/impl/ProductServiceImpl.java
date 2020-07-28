@@ -1,8 +1,14 @@
 package com.example.rabbitmq.service.impl;
 
+import com.example.rabbitmq.common.CommonResult;
 import com.example.rabbitmq.entity.Product;
 import com.example.rabbitmq.dao.ProductDao;
 import com.example.rabbitmq.service.ProductService;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,6 +24,10 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     @Resource
     private ProductDao productDao;
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+    @Resource
+    private CommonMqService commonMqService;
 
     /**
      * 通过ID查询单条数据
@@ -75,5 +85,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean deleteById(Integer id) {
         return this.productDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public CommonResult seckillProduct(String mobile) {
+        commonMqService.sendRobbingMsg(mobile);
+        return CommonResult.success("正在抢单中,请稍等");
     }
 }

@@ -31,5 +31,4 @@ public class ProductController {
     public Product selectOne(Integer id) {
         return this.productService.queryById(id);
     }
-
 }

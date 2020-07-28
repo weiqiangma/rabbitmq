@@ -3,6 +3,7 @@ package com.example.rabbitmq;
 import com.example.rabbitmq.entity.ProductBak;
 import com.example.rabbitmq.entity.User;
 import com.example.rabbitmq.service.ProductBakService;
+import com.example.rabbitmq.service.ProductService;
 import com.example.rabbitmq.service.impl.CommonMqService;
 import com.example.rabbitmq.service.impl.InitService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +32,8 @@ class RabbitmqApplicationTests {
     RabbitTemplate rabbitTemplate;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    ProductService productService;
     @Autowired
     ProductBakService productBakService;
     @Autowired
@@ -74,11 +77,14 @@ class RabbitmqApplicationTests {
 //            Message message = MessageBuilder.withBody(body.getBytes()).build();
 //            rabbitTemplate.convertAndSend("testDirectExchange", "test.direct.routing.key", message);
             //rabbitTemplate.send("testFanOutExchange","test.fanout.routing.key1", message);
-            commonMqService.sendRobbingMsgV2("17857026617");
+            commonMqService.sendRobbingMsg("17857026617");
     }
 
     @Test
     public void testFindProduct() {
-        initService.generateMultiThread();
+        Random random = new Random();
+        for(int i = 0; i < 200; i++) {
+            productService.seckillProduct(String.valueOf(random.nextInt(100000)));
+        }
     }
 }

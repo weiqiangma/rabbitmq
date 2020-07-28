@@ -1,5 +1,6 @@
 package com.example.rabbitmq.service;
 
+import com.example.rabbitmq.common.CommonResult;
 import com.example.rabbitmq.entity.Product;
 import java.util.List;
 
@@ -51,5 +52,12 @@ public interface ProductService {
      * @return 是否成功
      */
     boolean deleteById(Integer id);
+
+    /**
+     * 根据手机号秒杀商品
+     * @param mobile
+     * @return
+     */
+    CommonResult seckillProduct(String mobile);
 
 }

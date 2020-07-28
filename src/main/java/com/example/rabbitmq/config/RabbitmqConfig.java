@@ -68,7 +68,7 @@ public class RabbitmqConfig {
     public SimpleRabbitListenerContainerFactory multiListenerContainer(){
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factoryConfigurer.configure(factory,connectionFactory);
-        //factory.setMessageConverter(new Jackson2JsonMessageConverter());
+        factory.setMessageConverter(new Jackson2JsonMessageConverter());
         factory.setAcknowledgeMode(AcknowledgeMode.NONE);
         factory.setConcurrentConsumers(env.getProperty("spring.rabbitmq.listener.concurrency",int.class));
         factory.setMaxConcurrentConsumers(env.getProperty("spring.rabbitmq.listener.max-concurrency",int.class));
@@ -276,9 +276,6 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(simpleDeadRealQueue()).to(simpleDeadRealExchange()).with(env.getProperty("simple.dead.routing.key.name"));
     }
 
-
-
-
     //TODO：用户下单支付超时死信队列模型
 
     @Bean
@@ -429,4 +426,6 @@ public class RabbitmqConfig {
         factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         return factory;
     }
+
+
 }
